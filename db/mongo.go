@@ -14,6 +14,7 @@ type JukeboxDB struct {
 	albumDao    *AlbumDAO
 	artistDao   *ArtistDAO
 	playlistDao *PlaylistDAO
+	receiverDao *ReceiverDAO
 	songDao     *SongDAO
 }
 
@@ -38,6 +39,7 @@ func NewJukeboxDB(uri string) *JukeboxDB {
 		albumDao:    NewAlbumDAO(mDb),
 		artistDao:   NewArtistDAO(mDb),
 		playlistDao: NewPlaylistDAO(mDb),
+		receiverDao: NewReceiverDAO(mDb),
 		songDao:     NewSongDAO(mDb),
 	}
 }
@@ -58,6 +60,10 @@ func (db *JukeboxDB) Artists() *ArtistDAO {
 
 func (db *JukeboxDB) Playlists() *PlaylistDAO {
 	return db.playlistDao
+}
+
+func (db *JukeboxDB) Receivers() *ReceiverDAO {
+	return db.receiverDao
 }
 
 func (db *JukeboxDB) Songs() *SongDAO {

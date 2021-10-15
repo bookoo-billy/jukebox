@@ -6,8 +6,8 @@ import (
 	"net"
 	"net/http"
 
-	v1 "github.com/bookoo-billy/jukebox/api/v1"
 	"github.com/bookoo-billy/jukebox/db"
+	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
 	"github.com/bookoo-billy/jukebox/server"
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -64,6 +64,7 @@ func Run(ctx context.Context, network, address string) error {
 	v1.RegisterAlbumServiceServer(s, server.NewAlbumServer(jDB.Albums()))
 	v1.RegisterArtistServiceServer(s, server.NewArtistServer(jDB.Artists()))
 	v1.RegisterPlaylistServiceServer(s, server.NewPlaylistServer(jDB.Playlists()))
+	v1.RegisterReceiverServiceServer(s, server.NewReceiverServer(jDB.Receivers()))
 	v1.RegisterSongServiceServer(s, server.NewSongServer(jDB.Songs()))
 
 	go func() {
@@ -89,6 +90,7 @@ func RunInProcessGateway(ctx context.Context, addr string) error {
 	mustRegisterHandler(v1.RegisterAlbumServiceHandlerFromEndpoint, ctx, mux, *grpcServerEndpoint, grpcOpts)
 	mustRegisterHandler(v1.RegisterArtistServiceHandlerFromEndpoint, ctx, mux, *grpcServerEndpoint, grpcOpts)
 	mustRegisterHandler(v1.RegisterPlaylistServiceHandlerFromEndpoint, ctx, mux, *grpcServerEndpoint, grpcOpts)
+	mustRegisterHandler(v1.RegisterReceiverServiceHandlerFromEndpoint, ctx, mux, *grpcServerEndpoint, grpcOpts)
 	mustRegisterHandler(v1.RegisterSongServiceHandlerFromEndpoint, ctx, mux, *grpcServerEndpoint, grpcOpts)
 
 	s := &http.Server{

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	v1 "github.com/bookoo-billy/jukebox/api/v1"
+	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

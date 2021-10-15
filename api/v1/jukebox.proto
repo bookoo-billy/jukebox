@@ -141,22 +141,56 @@ service SongService {
 		    delete: "/api/v1/songs/{id}"
         };
     }
+}
 
-    rpc Play(SongPlayRequest) returns (Song)  {
+
+service ReceiverService {
+    rpc List(ReceiverQuery) returns (ReceiverList)  {
 		option (google.api.http) = {
-			post: "/api/v1/songs/{song.id}/play"
+			get: "/api/v1/receivers"
+        };
+    }
+
+    rpc Create(ReceiverCreateRequest) returns (Receiver)  {
+		option (google.api.http) = {
+			post: "/api/v1/receivers"
+            body: "receiver"
+        };
+    }
+
+    rpc Get(ReceiverQuery) returns (Receiver)  {
+		option (google.api.http) = {
+			get: "/api/v1/receivers/{id}"
+        };
+    }
+
+    rpc Update(ReceiverUpdateRequest) returns (Receiver)  {
+		option (google.api.http) = {
+			put: "/api/v1/receivers/{receiver.id}"
+            body: "receiver"
+        };
+    }
+
+    rpc Delete(ReceiverQuery) returns (Receiver)  {
+		option (google.api.http) = {
+		    delete: "/api/v1/receivers/{id}"
+        };
+    }
+
+    rpc Play(ReceiversPlayRequest) returns (ReceiversPlayResponse)  {
+		option (google.api.http) = {
+			post: "/api/v1/receivers/play"
             body: "song"
         };
     }
 
-    rpc Stop(SongStopRequest) returns (Song)  {
+    rpc Stop(ReceiversStopRequest) returns (ReceiversStopResponse)  {
 		option (google.api.http) = {
-			post: "/api/v1/songs/{song.id}/stop"
-            body: "song"
+			post: "/api/v1/receivers/stop"
         };
     }
 
-    rpc Receiver(ReceiverResponse) returns (ReceiverCommand);
+    rpc ReceiverChat(stream ReceiverCommandResponse) returns (stream ReceiverCommandRequest);
 }
 
 message Album {
@@ -207,17 +241,17 @@ message ArtistList {
 }
 
 message ArtistQuery {
-    string id = 1;
-    string name = 2;
-    string albumId = 3;
-    string artistId = 4;
-    string songId = 5;
-    string songName = 6;
+    string id = 1 [(tagger.tags) = "bson:\"id,omitempty\""];
+    string name = 2 [(tagger.tags) = "bson:\"name,omitempty\""];
+    string albumId = 3 [(tagger.tags) = "bson:\"albumid,omitempty\""];
+    string artistId = 4 [(tagger.tags) = "bson:\"artistid,omitempty\""];
+    string songId = 5 [(tagger.tags) = "bson:\"songid,omitempty\""];
+    string songName = 6 [(tagger.tags) = "bson:\"songname,omitempty\""];
 }
 
 message PlaylistQuery {
-    string id = 1;
-    string name = 2;
+    string id = 1 [(tagger.tags) = "bson:\"id,omitempty\""];
+    string name = 2 [(tagger.tags) = "bson:\"name,omitempty\""];
 }
 
 message PlaylistCreateRequest {
@@ -260,7 +294,7 @@ message Receiver {
     string url = 3;
 }
 
-message ReceiverCommand {
+message ReceiverCommandRequest {
     oneof command {
         PlaySongHeader playSongHeader = 1;
         PlaySongChunk playSongChunk = 2;
@@ -268,7 +302,7 @@ message ReceiverCommand {
     }
 }
 
-message ReceiverResponse {
+message ReceiverCommandResponse {
     oneof response {
         PlaySongHeaderResponse playSongHeaderResponse = 1;
         PlaySongChunkResponse playSongChunkResponse = 2;
@@ -276,18 +310,53 @@ message ReceiverResponse {
     }
 }
 
+message ReceiverCreateRequest {
+    Receiver receiver = 1;
+}
+
+message ReceiverList {
+    repeated Receiver items = 1;
+}
+
+message ReceiverQuery {
+    string id = 1 [(tagger.tags) = "bson:\"id,omitempty\""];
+    string name = 2 [(tagger.tags) = "bson:\"name,omitempty\""];
+    string url = 3 [(tagger.tags) = "bson:\"url,omitempty\""];
+}
+
+message ReceiverUpdateRequest {
+    Receiver receiver = 1;
+}
+
+message ReceiversPlayRequest {
+    Song song = 100;
+}
+
+message ReceiversPlayResponse {
+    Song song = 100;
+    ReceiverList receivers = 101;
+}
+
+message ReceiversStopRequest {
+    Song song = 100;
+}
+
+message ReceiversStopResponse {
+    ReceiverList receivers = 100;
+}
+
 message SongList {
     repeated Song items = 1;
 }
 
 message SongQuery {
-    string id = 1;
-    string artistId = 2;
-    string albumId = 3;
+    string id = 1 [(tagger.tags) = "bson:\"id,omitempty\""];
+    string artistId = 2 [(tagger.tags) = "bson:\"artistid,omitempty\""];
+    string albumId = 3 [(tagger.tags) = "bson:\"albumid,omitempty\""];
 
-    string name = 4;
-    string artistName = 5;
-    string albumName = 6;
+    string name = 4 [(tagger.tags) = "bson:\"name,omitempty\""];
+    string artistName = 5 [(tagger.tags) = "bson:\"artistname,omitempty\""];
+    string albumName = 6 [(tagger.tags) = "bson:\"albumname,omitempty\""];
 }
 
 message SongCreateRequest {
@@ -295,14 +364,6 @@ message SongCreateRequest {
 }
 
 message SongUpdateRequest {
-    Song song = 100;
-}
-
-message SongPlayRequest {
-    Song song = 100;
-}
-
-message SongStopRequest {
     Song song = 100;
 }
 
