@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"time"
 
 	"github.com/bookoo-billy/jukebox/db"
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
@@ -66,16 +67,38 @@ func (s *ReceiverServer) Stop(ctx context.Context, request *v1.ReceiversStopRequ
 func (s *ReceiverServer) ReceiverChat(chatSrv v1.ReceiverService_ReceiverChatServer) error {
 	for {
 		glog.Info("Sending message to receiver")
-		chatSrv.Send(&v1.ReceiverCommandRequest{})
+		err := chatSrv.Send(&v1.ReceiverCommandRequest{
+			Command: &v1.ReceiverCommandRequest_PlaySongHeader{
+				PlaySongHeader: &v1.PlaySongHeader{
+					Song: &v1.Song{
+						Name: "Our Father",
+						Album: &v1.Album{
+							Name: "III Sides to Every Story",
+						},
+						Artist: &v1.Artist{
+							Name: "Extreme",
+						},
+					},
+				},
+			},
+		})
+		if err != nil {
+			glog.Errorln("Receiver stopped accepting commands, shutting down stream")
+			glog.Error(err)
+			return err
+		}
+
 		glog.Info("Sent message to receiver, awaiting response....")
 
 		receiverResp, err := chatSrv.Recv()
 		if err != nil {
 			glog.Errorln("Failed while receiving response from receiver")
 			glog.Error(err)
-			continue
+			return err
 		}
 		glog.Info("Received message from receiver")
 		glog.Info(receiverResp)
+
+		time.Sleep(1 * time.Second)
 	}
 }

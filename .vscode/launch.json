@@ -10,7 +10,8 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}",
-            "args": ["-logtostderr=true", "-stderrthreshold=ERROR"]
+            "args": ["-logtostderr=true", "-stderrthreshold=ERROR"],
+            "internalConsoleOptions": "openOnSessionStart",
           }
     ]
 }
