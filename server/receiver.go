@@ -2,11 +2,14 @@ package server
 
 import (
 	"context"
-	"time"
+	"github.com/hajimehoshi/go-mp3"
+	"github.com/sirupsen/logrus"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"io"
+	"os"
 
 	"github.com/bookoo-billy/jukebox/db"
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
-	"github.com/golang/glog"
 )
 
 type ReceiverServer struct {
@@ -45,7 +48,7 @@ func (s *ReceiverServer) Play(ctx context.Context, request *v1.ReceiversPlayRequ
 	}
 
 	for _, receiver := range receivers.Items {
-		glog.Info("Sending play song request to receiver %s at address %s", receiver.Name, receiver.Url)
+		logrus.Info("Sending play song request to receiver %s at address %s", receiver.Name, receiver.Url)
 	}
 
 	return &v1.ReceiversPlayResponse{Song: request.Song, Receivers: receivers}, nil
@@ -58,47 +61,115 @@ func (s *ReceiverServer) Stop(ctx context.Context, request *v1.ReceiversStopRequ
 	}
 
 	for _, receiver := range receivers.Items {
-		glog.Info("Sending stop song request to receiver %s at address %s", receiver.Name, receiver.Url)
+		logrus.Info("Sending stop song request to receiver %s at address %s", receiver.Name, receiver.Url)
 	}
 
 	return &v1.ReceiversStopResponse{Receivers: receivers}, nil
 }
 
 func (s *ReceiverServer) ReceiverChat(chatSrv v1.ReceiverService_ReceiverChatServer) error {
+
 	for {
-		glog.Info("Sending message to receiver")
-		err := chatSrv.Send(&v1.ReceiverCommandRequest{
-			Command: &v1.ReceiverCommandRequest_PlaySongHeader{
-				PlaySongHeader: &v1.PlaySongHeader{
-					Song: &v1.Song{
-						Name: "Our Father",
-						Album: &v1.Album{
-							Name: "III Sides to Every Story",
-						},
-						Artist: &v1.Artist{
-							Name: "Extreme",
-						},
+		err := s.sendSong(chatSrv)
+		if err != nil {
+			return err
+		}
+	}
+}
+
+func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer) error {
+	logrus.Info("Decoding MP3 to PCM...")
+	f, err := os.Open("test.mp3")
+	if err != nil {
+		logrus.WithError(err).Error("Failed to open mp3")
+		return err
+	}
+	defer f.Close()
+
+	decoder, err := mp3.NewDecoder(f)
+	if err != nil {
+		logrus.WithError(err).Error("Failed to create decoder from mp3 file")
+	}
+
+	logrus.Info("Sending song header to receiver")
+	err = chatSrv.Send(&v1.ReceiverCommandRequest{
+		Command: &v1.ReceiverCommandRequest_PlaySongHeader{
+			PlaySongHeader: &v1.PlaySongHeader{
+				Song: &v1.Song{
+					Name: "Our Father",
+					Album: &v1.Album{
+						Name: "III Sides to Every Story",
+					},
+					Artist: &v1.Artist{
+						Name: "Extreme",
 					},
 				},
 			},
-		})
-		if err != nil {
-			glog.Errorln("Receiver stopped accepting commands, shutting down stream")
-			glog.Error(err)
-			return err
-		}
-
-		glog.Info("Sent message to receiver, awaiting response....")
-
-		receiverResp, err := chatSrv.Recv()
-		if err != nil {
-			glog.Errorln("Failed while receiving response from receiver")
-			glog.Error(err)
-			return err
-		}
-		glog.Info("Received message from receiver")
-		glog.Info(receiverResp)
-
-		time.Sleep(1 * time.Second)
+		},
+	})
+	if err != nil {
+		logrus.WithError(err).Errorln("Receiver stopped accepting commands, shutting down stream")
+		return err
 	}
+
+	_, err = chatSrv.Recv()
+	if err != nil {
+		logrus.WithError(err).Errorln("Failed to receive ack after sending song header to receiver")
+		return err
+	}
+
+	logrus.Info("Sending song chunks to receiver...")
+	buf := make([]byte, 4192)
+
+	for {
+		length, decErr := decoder.Read(buf)
+		playErr := chatSrv.Send(&v1.ReceiverCommandRequest{
+			Command: &v1.ReceiverCommandRequest_PlaySongChunk{
+				PlaySongChunk: &v1.PlaySongChunk{
+					Chunk: buf,
+					Size: int32(length),
+					Timestamp: timestamppb.Now(),
+				},
+			},
+		})
+		if decErr != nil {
+			if decErr != io.EOF {
+				logrus.WithError(decErr).Error("Failed to read decoder buffer")
+				return decErr
+			} else {
+				logrus.Info("Received EOF from mp3 decoder")
+				break
+			}
+		}
+
+		if playErr != nil {
+			logrus.WithError(playErr).Errorln("Failed while writing chunk to receiver")
+			return playErr
+		}
+		
+		if length == 0 {
+			logrus.Info("Received zero bytes from decoder, assuming finished?")
+			break
+		}
+	}
+
+	logrus.Info("Sending song trailer to receiver")
+	err = chatSrv.Send(&v1.ReceiverCommandRequest{
+		Command: &v1.ReceiverCommandRequest_PlaySongTrailer{
+			PlaySongTrailer: &v1.PlaySongTrailer{},
+		},
+	})
+	if err != nil {
+		logrus.WithError(err).Errorln("Failed to send song trailer to receiver")
+		return err
+	}
+
+	_, err = chatSrv.Recv()
+	if err != nil {
+		logrus.WithError(err).Errorln("Failed to receive ack while after sending song trailer to receiver")
+		return err
+	}
+
+	return nil
+
 }

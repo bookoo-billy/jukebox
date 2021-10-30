@@ -275,7 +275,8 @@ message Playlist {
 
 message PlaySongChunk {
     bytes chunk = 1;
-    google.protobuf.Timestamp timestamp = 2;
+    int32 size = 2;
+    google.protobuf.Timestamp timestamp = 3;
 }
 
 message PlaySongChunkResponse {}

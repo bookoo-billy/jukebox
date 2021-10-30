@@ -2,9 +2,9 @@ package db
 
 import (
 	"context"
+	"github.com/sirupsen/logrus"
 	"time"
 
-	"github.com/golang/glog"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -21,7 +21,7 @@ type JukeboxDB struct {
 func NewJukeboxDB(uri string) *JukeboxDB {
 	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
 	if err != nil {
-		glog.Fatal(err)
+		logrus.WithError(err).Panic("Failed in create mongo client")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -29,7 +29,7 @@ func NewJukeboxDB(uri string) *JukeboxDB {
 
 	err = client.Connect(ctx)
 	if err != nil {
-		glog.Fatal(err)
+		logrus.WithError(err).Panic("Failed to connect to mongo")
 	}
 
 	mDb := client.Database("jukebox")

@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/sirupsen/logrus"
 	"net"
 	"net/http"
 
 	"github.com/bookoo-billy/jukebox/db"
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
 	"github.com/bookoo-billy/jukebox/server"
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -26,12 +26,15 @@ var (
 
 func main() {
 	flag.Parse()
-	defer glog.Flush()
+
+	logrus.SetFormatter(&logrus.TextFormatter{
+		ForceColors:               true,
+	})
 
 	ctx := context.Background()
 	var g errgroup.Group
 
-	glog.Info("Starting gRPC + HTTP servers...")
+	logrus.Info("Starting gRPC + HTTP servers...")
 	g.Go(func() error {
 		return Run(ctx, "tcp", *grpcServerEndpoint)
 	})
@@ -40,7 +43,10 @@ func main() {
 		return RunInProcessGateway(ctx, *httpServerEndpoint)
 	})
 
-	g.Wait()
+	err := g.Wait()
+	if err != nil {
+		logrus.WithError(err).Panic("Server crashed and burned!")
+	}
 }
 
 // Run starts the example gRPC service.
@@ -52,14 +58,19 @@ func Run(ctx context.Context, network, address string) error {
 	}
 	defer func() {
 		if err := l.Close(); err != nil {
-			glog.Errorf("Failed to close %s %s: %v", network, address, err)
+			logrus.Errorf("Failed to close %s %s: %v", network, address, err)
 		}
 	}()
 
 	s := grpc.NewServer()
 
 	jDB := db.NewJukeboxDB(*mongoDBURI)
-	defer jDB.Close()
+	defer func(jDB *db.JukeboxDB) {
+		err := jDB.Close()
+		if err != nil {
+			logrus.WithError(err).Error("Failed to close jukebox DB")
+		}
+	}(jDB)
 
 	v1.RegisterAlbumServiceServer(s, server.NewAlbumServer(jDB.Albums()))
 	v1.RegisterArtistServiceServer(s, server.NewArtistServer(jDB.Artists()))
@@ -70,10 +81,10 @@ func Run(ctx context.Context, network, address string) error {
 	go func() {
 		defer s.GracefulStop()
 		<-ctx.Done()
-		glog.Info("Shutting down gRPC server...")
+		logrus.Info("Shutting down gRPC server...")
 	}()
 
-	glog.Infof("gRPC server started on %s", address)
+	logrus.Infof("gRPC server started on %s", address)
 	return s.Serve(l)
 }
 
@@ -100,15 +111,15 @@ func RunInProcessGateway(ctx context.Context, addr string) error {
 
 	go func() {
 		<-ctx.Done()
-		glog.Infof("Shutting down the http gateway server")
+		logrus.Infof("Shutting down the http gateway server")
 		if err := s.Shutdown(context.Background()); err != nil {
-			glog.Errorf("Failed to shutdown http gateway server: %v", err)
+			logrus.WithError(err).Errorf("Failed to shutdown http gateway server")
 		}
 	}()
 
-	glog.Infof("http server started on %s", addr)
+	logrus.Infof("http server started on %s", addr)
 	if err := s.ListenAndServe(); err != http.ErrServerClosed {
-		glog.Errorf("Failed to listen and serve: %v", err)
+		logrus.WithError(err).Error("Failed to listen and serve")
 		return err
 	}
 	return nil

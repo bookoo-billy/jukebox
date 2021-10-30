@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"errors"
+	"github.com/sirupsen/logrus"
 
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
 	"github.com/google/uuid"
@@ -18,10 +19,14 @@ type ReceiverDAO struct {
 func NewReceiverDAO(mDb *mongo.Database) *ReceiverDAO {
 	collection := mDb.Collection("Receivers")
 
-	collection.Indexes().CreateOne(context.Background(), mongo.IndexModel{
-		Keys:    bson.D{{Key: "id", Value: "1"}, {Key: "name", Value: "1"}},
+	_, err := collection.Indexes().CreateOne(context.Background(), mongo.IndexModel{
+		Keys:    bson.D{{Key: "id", Value: 1}, {Key: "name", Value: 1}},
 		Options: options.Index().SetUnique(true),
 	})
+	if err != nil {
+		logrus.WithError(err).Panic("Failed in create receiver index")
+	}
+
 	return &ReceiverDAO{collection: collection}
 }
 
