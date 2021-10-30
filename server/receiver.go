@@ -119,7 +119,7 @@ func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer)
 	}
 
 	logrus.Info("Sending song chunks to receiver...")
-	buf := make([]byte, 4192)
+	buf := make([]byte, 4608)
 
 	for {
 		length, decErr := decoder.Read(buf)
