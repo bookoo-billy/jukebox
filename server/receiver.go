@@ -7,6 +7,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"io"
 	"os"
+	"time"
 
 	"github.com/bookoo-billy/jukebox/db"
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
@@ -121,14 +122,20 @@ func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer)
 	logrus.Info("Sending song chunks to receiver...")
 	buf := make([]byte, 4608)
 
+	startTime := time.Now()
+	startTime.Add(2 * time.Second)
+	count := 0
+
 	for {
 		length, decErr := decoder.Read(buf)
+		playAt := startTime.Add(time.Duration((1152.0 / 44100.0) * float64(count)) * time.Second)
+
 		playErr := chatSrv.Send(&v1.ReceiverCommandRequest{
 			Command: &v1.ReceiverCommandRequest_PlaySongChunk{
 				PlaySongChunk: &v1.PlaySongChunk{
 					Chunk: buf,
 					Size: int32(length),
-					Timestamp: timestamppb.Now(),
+					Timestamp: timestamppb.New(playAt),
 				},
 			},
 		})
@@ -151,6 +158,7 @@ func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer)
 			logrus.Info("Received zero bytes from decoder, assuming finished?")
 			break
 		}
+		count++
 	}
 
 	logrus.Info("Sending song trailer to receiver")
