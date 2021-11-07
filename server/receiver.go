@@ -13,6 +13,12 @@ import (
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
 )
 
+const (
+	Mp3SamplesPerChannel = 1152
+	Mp3Channels = 2
+	Mp3ByteDepth = 2
+)
+
 type ReceiverServer struct {
 	v1.UnimplementedReceiverServiceServer
 	dao *db.ReceiverDAO
@@ -105,6 +111,10 @@ func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer)
 						Name: "Extreme",
 					},
 				},
+				Format:     v1.Format_JUKEBOX_S16,
+				SampleRate: int32(decoder.SampleRate()),
+				Channels:   uint32(Mp3Channels),
+				Samples:    uint32(Mp3SamplesPerChannel),
 			},
 		},
 	})
@@ -120,7 +130,7 @@ func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer)
 	}
 
 	logrus.Info("Sending song chunks to receiver...")
-	buf := make([]byte, 4608)
+	buf := make([]byte, Mp3SamplesPerChannel * Mp3Channels * Mp3ByteDepth)
 
 	startTime := time.Now()
 	startTime.Add(2 * time.Second)
@@ -128,7 +138,7 @@ func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer)
 
 	for {
 		length, decErr := decoder.Read(buf)
-		playAt := startTime.Add(time.Duration((1152.0 / 44100.0) * float64(count)) * time.Second)
+		playAt := startTime.Add(time.Duration((float64(Mp3SamplesPerChannel) / float64(decoder.SampleRate())) * float64(count)) * time.Second)
 
 		playErr := chatSrv.Send(&v1.ReceiverCommandRequest{
 			Command: &v1.ReceiverCommandRequest_PlaySongChunk{
