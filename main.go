@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/bookoo-billy/jukebox/db/mongo"
 	"github.com/sirupsen/logrus"
 	"net"
 	"net/http"
 
-	"github.com/bookoo-billy/jukebox/db"
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
 	"github.com/bookoo-billy/jukebox/server"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -64,8 +64,8 @@ func Run(ctx context.Context, network, address string) error {
 
 	s := grpc.NewServer()
 
-	jDB := db.NewJukeboxDB(*mongoDBURI)
-	defer func(jDB *db.JukeboxDB) {
+	jDB := mongo.NewJukeboxDB(*mongoDBURI)
+	defer func(jDB *mongo.JukeboxDB) {
 		err := jDB.Close()
 		if err != nil {
 			logrus.WithError(err).Error("Failed to close jukebox DB")

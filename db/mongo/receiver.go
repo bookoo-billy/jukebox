@@ -1,8 +1,9 @@
-package db
+package mongo
 
 import (
 	"context"
 	"errors"
+	"github.com/bookoo-billy/jukebox/db"
 	"github.com/sirupsen/logrus"
 
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
@@ -16,7 +17,7 @@ type ReceiverDAO struct {
 	collection *mongo.Collection
 }
 
-func NewReceiverDAO(mDb *mongo.Database) *ReceiverDAO {
+func NewReceiverDAO(mDb *mongo.Database) db.ReceiverDAO {
 	collection := mDb.Collection("Receivers")
 
 	_, err := collection.Indexes().CreateOne(context.Background(), mongo.IndexModel{

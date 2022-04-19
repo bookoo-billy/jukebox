@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"github.com/bookoo-billy/jukebox/db"
 	"github.com/hajimehoshi/go-mp3"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -9,7 +10,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/bookoo-billy/jukebox/db"
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
 )
 
@@ -21,10 +21,10 @@ const (
 
 type ReceiverServer struct {
 	v1.UnimplementedReceiverServiceServer
-	dao *db.ReceiverDAO
+	dao db.ReceiverDAO
 }
 
-func NewReceiverServer(dao *db.ReceiverDAO) v1.ReceiverServiceServer {
+func NewReceiverServer(dao db.ReceiverDAO) v1.ReceiverServiceServer {
 	return &ReceiverServer{dao: dao}
 }
 

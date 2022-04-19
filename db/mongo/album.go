@@ -1,8 +1,9 @@
-package db
+package mongo
 
 import (
 	"context"
 	"errors"
+	"github.com/bookoo-billy/jukebox/db"
 	"github.com/sirupsen/logrus"
 
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
@@ -16,7 +17,7 @@ type AlbumDAO struct {
 	collection *mongo.Collection
 }
 
-func NewAlbumDAO(mDb *mongo.Database) *AlbumDAO {
+func NewAlbumDAO(mDb *mongo.Database) db.AlbumDAO {
 	collection := mDb.Collection("albums")
 
 	_, err := collection.Indexes().CreateOne(context.Background(), mongo.IndexModel{

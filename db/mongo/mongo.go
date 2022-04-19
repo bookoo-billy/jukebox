@@ -1,7 +1,8 @@
-package db
+package mongo
 
 import (
 	"context"
+	"github.com/bookoo-billy/jukebox/db"
 	"github.com/sirupsen/logrus"
 	"time"
 
@@ -11,11 +12,11 @@ import (
 
 type JukeboxDB struct {
 	client      *mongo.Client
-	albumDao    *AlbumDAO
-	artistDao   *ArtistDAO
-	playlistDao *PlaylistDAO
-	receiverDao *ReceiverDAO
-	songDao     *SongDAO
+	albumDao    db.AlbumDAO
+	artistDao   db.ArtistDAO
+	playlistDao db.PlaylistDAO
+	receiverDao db.ReceiverDAO
+	songDao     db.SongDAO
 }
 
 func NewJukeboxDB(uri string) *JukeboxDB {
@@ -50,22 +51,22 @@ func (db *JukeboxDB) Close() error {
 	return db.client.Disconnect(ctx)
 }
 
-func (db *JukeboxDB) Albums() *AlbumDAO {
+func (db *JukeboxDB) Albums() db.AlbumDAO {
 	return db.albumDao
 }
 
-func (db *JukeboxDB) Artists() *ArtistDAO {
+func (db *JukeboxDB) Artists() db.ArtistDAO {
 	return db.artistDao
 }
 
-func (db *JukeboxDB) Playlists() *PlaylistDAO {
+func (db *JukeboxDB) Playlists() db.PlaylistDAO {
 	return db.playlistDao
 }
 
-func (db *JukeboxDB) Receivers() *ReceiverDAO {
+func (db *JukeboxDB) Receivers() db.ReceiverDAO {
 	return db.receiverDao
 }
 
-func (db *JukeboxDB) Songs() *SongDAO {
+func (db *JukeboxDB) Songs() db.SongDAO {
 	return db.songDao
 }

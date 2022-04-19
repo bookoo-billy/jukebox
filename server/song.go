@@ -2,17 +2,16 @@ package server
 
 import (
 	"context"
-
 	"github.com/bookoo-billy/jukebox/db"
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
 )
 
 type SongServer struct {
 	v1.UnimplementedSongServiceServer
-	dao *db.SongDAO
+	dao db.SongDAO
 }
 
-func NewSongServer(dao *db.SongDAO) v1.SongServiceServer {
+func NewSongServer(dao db.SongDAO) v1.SongServiceServer {
 	return &SongServer{dao: dao}
 }
 

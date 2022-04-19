@@ -1,8 +1,9 @@
-package db
+package mongo
 
 import (
 	"context"
 	"errors"
+	"github.com/bookoo-billy/jukebox/db"
 	"github.com/sirupsen/logrus"
 
 	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
@@ -16,7 +17,7 @@ type PlaylistDAO struct {
 	collection *mongo.Collection
 }
 
-func NewPlaylistDAO(mDb *mongo.Database) *PlaylistDAO {
+func NewPlaylistDAO(mDb *mongo.Database) db.PlaylistDAO {
 	collection := mDb.Collection("Playlists")
 
 	_, err := collection.Indexes().CreateOne(context.Background(), mongo.IndexModel{
