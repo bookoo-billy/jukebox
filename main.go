@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/bookoo-billy/jukebox/db/mongo"
+	"github.com/bookoo-billy/jukebox/db"
+	_ "github.com/bookoo-billy/jukebox/db/mongo"
+	"github.com/bookoo-billy/jukebox/db/postgres"
 	"github.com/sirupsen/logrus"
 	"net"
 	"net/http"
@@ -21,7 +23,8 @@ var (
 	// gRPC server endpoint
 	grpcServerEndpoint = flag.String("grpc-server-endpoint", "localhost:9834", "gRPC server endpoint")
 	httpServerEndpoint = flag.String("http-server-endpoint", "localhost:9835", "HTTP server endpoint")
-	mongoDBURI         = flag.String("mongo-db-uri", "mongodb://localhost:27017/jukebox", "mongo DB URI")
+	mongoDBURI         = flag.String("mongo-db-uri", "mongodb://localhost:27017/jukebox", "Mongo DB URI")
+	postgresDbDsn      = flag.String("postgres-db-dsn", "host=localhost port=5000 user=gorm dbname=jukebox", "Postgres DB DSN")
 )
 
 func main() {
@@ -64,8 +67,9 @@ func Run(ctx context.Context, network, address string) error {
 
 	s := grpc.NewServer()
 
-	jDB := mongo.NewJukeboxDB(*mongoDBURI)
-	defer func(jDB *mongo.JukeboxDB) {
+	//jDB := mongo.NewJukeboxDB(*mongoDBURI)
+	jDB := postgres.NewJukeboxDB(*postgresDbDsn)
+	defer func(jDB db.JukeboxDb) {
 		err := jDB.Close()
 		if err != nil {
 			logrus.WithError(err).Error("Failed to close jukebox DB")

@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type JukeboxDB struct {
+type JukeboxDb struct {
 	client      *mongo.Client
 	albumDao    db.AlbumDAO
 	artistDao   db.ArtistDAO
@@ -19,7 +19,7 @@ type JukeboxDB struct {
 	songDao     db.SongDAO
 }
 
-func NewJukeboxDB(uri string) *JukeboxDB {
+func NewJukeboxDB(uri string) db.JukeboxDb {
 	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
 	if err != nil {
 		logrus.WithError(err).Panic("Failed in create mongo client")
@@ -35,7 +35,7 @@ func NewJukeboxDB(uri string) *JukeboxDB {
 
 	mDb := client.Database("jukebox")
 
-	return &JukeboxDB{
+	return &JukeboxDb{
 		client:      client,
 		albumDao:    NewAlbumDAO(mDb),
 		artistDao:   NewArtistDAO(mDb),
@@ -45,28 +45,28 @@ func NewJukeboxDB(uri string) *JukeboxDB {
 	}
 }
 
-func (db *JukeboxDB) Close() error {
+func (db *JukeboxDb) Close() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	return db.client.Disconnect(ctx)
 }
 
-func (db *JukeboxDB) Albums() db.AlbumDAO {
+func (db *JukeboxDb) Albums() db.AlbumDAO {
 	return db.albumDao
 }
 
-func (db *JukeboxDB) Artists() db.ArtistDAO {
+func (db *JukeboxDb) Artists() db.ArtistDAO {
 	return db.artistDao
 }
 
-func (db *JukeboxDB) Playlists() db.PlaylistDAO {
+func (db *JukeboxDb) Playlists() db.PlaylistDAO {
 	return db.playlistDao
 }
 
-func (db *JukeboxDB) Receivers() db.ReceiverDAO {
+func (db *JukeboxDb) Receivers() db.ReceiverDAO {
 	return db.receiverDao
 }
 
-func (db *JukeboxDB) Songs() db.SongDAO {
+func (db *JukeboxDb) Songs() db.SongDAO {
 	return db.songDao
 }

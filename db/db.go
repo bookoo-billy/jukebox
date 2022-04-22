@@ -5,6 +5,15 @@ import (
 	"github.com/bookoo-billy/jukebox/gen/api/v1"
 )
 
+type JukeboxDb interface {
+	Close() error
+	Albums() AlbumDAO
+	Artists() ArtistDAO
+	Playlists() PlaylistDAO
+	Receivers() ReceiverDAO
+	Songs() SongDAO
+}
+
 type AlbumDAO interface {
 	Create(ctx context.Context, album *v1.Album) (*v1.Album, error)
 	Delete(ctx context.Context, query *v1.AlbumQuery) (*v1.Album, error)
