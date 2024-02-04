@@ -1,7 +1,7 @@
 package db
 
 import (
-	v1 "bookoo-billy/jukebox/proto/api/v1"
+	v1 "github.com/bookoo-billy/jukebox/proto/api/v1"
 	"context"
 )
 
