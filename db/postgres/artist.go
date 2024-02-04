@@ -3,11 +3,12 @@ package postgres
 import (
 	"context"
 	"errors"
+
 	"github.com/bookoo-billy/jukebox/db"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
+	v1 "github.com/bookoo-billy/jukebox/proto/api/v1"
 	"github.com/google/uuid"
 )
 
@@ -50,8 +51,8 @@ func (a *ArtistDAO) Delete(ctx context.Context, query *v1.ArtistQuery) (*v1.Arti
 
 func (a *ArtistDAO) Get(ctx context.Context, query *v1.ArtistQuery) (*v1.Artist, error) {
 	artist := &v1.Artist{
-		Id:     query.Id,
-		Name:   query.Name,
+		Id:   query.Id,
+		Name: query.Name,
 	}
 	tx := a.db.WithContext(ctx).First(&artist)
 
@@ -67,8 +68,8 @@ func (a *ArtistDAO) List(ctx context.Context, query *v1.ArtistQuery) (*v1.Artist
 	tx := a.db.WithContext(ctx).
 		Clauses(clause.Returning{}).
 		Where(&v1.Artist{
-			Id:     query.Id,
-			Name:   query.Name,
+			Id:   query.Id,
+			Name: query.Name,
 		}).
 		Find(items)
 

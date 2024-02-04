@@ -1,0 +1,1613 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/v1/jukebox.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "AlbumService"
+    },
+    {
+      "name": "ArtistService"
+    },
+    {
+      "name": "PlaylistService"
+    },
+    {
+      "name": "SongService"
+    },
+    {
+      "name": "ReceiverService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/albums": {
+      "get": {
+        "operationId": "AlbumService_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxAlbumList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AlbumService"
+        ]
+      },
+      "post": {
+        "operationId": "AlbumService_Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxAlbum"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "album",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jukeboxAlbum"
+            }
+          }
+        ],
+        "tags": [
+          "AlbumService"
+        ]
+      }
+    },
+    "/api/v1/albums/{album.id}": {
+      "put": {
+        "operationId": "AlbumService_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxAlbum"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "album.id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "album",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "artist": {
+                  "$ref": "#/definitions/jukeboxArtist"
+                },
+                "tracks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/jukeboxSong"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "AlbumService"
+        ]
+      }
+    },
+    "/api/v1/albums/{id}": {
+      "get": {
+        "operationId": "AlbumService_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxAlbum"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AlbumService"
+        ]
+      },
+      "delete": {
+        "operationId": "AlbumService_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxAlbum"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AlbumService"
+        ]
+      }
+    },
+    "/api/v1/artists": {
+      "get": {
+        "operationId": "ArtistService_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxArtistList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "albumId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ArtistService"
+        ]
+      },
+      "post": {
+        "operationId": "ArtistService_Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxArtist"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "artist",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jukeboxArtist"
+            }
+          }
+        ],
+        "tags": [
+          "ArtistService"
+        ]
+      }
+    },
+    "/api/v1/artists/{artist.id}": {
+      "put": {
+        "operationId": "ArtistService_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxArtist"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "artist.id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "artist",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "albums": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/jukeboxAlbum"
+                  }
+                },
+                "songs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/jukeboxSong"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "ArtistService"
+        ]
+      }
+    },
+    "/api/v1/artists/{id}": {
+      "get": {
+        "operationId": "ArtistService_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxArtist"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "albumId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ArtistService"
+        ]
+      },
+      "delete": {
+        "operationId": "ArtistService_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxArtist"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "albumId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "songName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ArtistService"
+        ]
+      }
+    },
+    "/api/v1/playlists": {
+      "get": {
+        "operationId": "PlaylistService_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxPlaylistList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PlaylistService"
+        ]
+      },
+      "post": {
+        "operationId": "PlaylistService_Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxPlaylist"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "playlist",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jukeboxPlaylist"
+            }
+          }
+        ],
+        "tags": [
+          "PlaylistService"
+        ]
+      }
+    },
+    "/api/v1/playlists/{id}": {
+      "get": {
+        "operationId": "PlaylistService_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxPlaylist"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PlaylistService"
+        ]
+      },
+      "delete": {
+        "operationId": "PlaylistService_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxPlaylist"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PlaylistService"
+        ]
+      }
+    },
+    "/api/v1/playlists/{playlist.id}": {
+      "put": {
+        "operationId": "PlaylistService_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxPlaylist"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "playlist.id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "playlist",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "songs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/jukeboxSong"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "PlaylistService"
+        ]
+      }
+    },
+    "/api/v1/receivers": {
+      "get": {
+        "operationId": "ReceiverService_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxReceiverList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ReceiverService"
+        ]
+      },
+      "post": {
+        "operationId": "ReceiverService_Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxReceiver"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "receiver",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jukeboxReceiver"
+            }
+          }
+        ],
+        "tags": [
+          "ReceiverService"
+        ]
+      }
+    },
+    "/api/v1/receivers/play": {
+      "post": {
+        "operationId": "ReceiverService_Play",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxReceiversPlayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "song",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jukeboxSong"
+            }
+          }
+        ],
+        "tags": [
+          "ReceiverService"
+        ]
+      }
+    },
+    "/api/v1/receivers/stop": {
+      "post": {
+        "operationId": "ReceiverService_Stop",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxReceiversStopResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "song.id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "song.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "song.trackNumber",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "song.trackLength",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "song.album.id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "song.album.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "song.album.artist.id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "song.album.artist.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "song.artist.id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "song.artist.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ReceiverService"
+        ]
+      }
+    },
+    "/api/v1/receivers/{id}": {
+      "get": {
+        "operationId": "ReceiverService_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxReceiver"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ReceiverService"
+        ]
+      },
+      "delete": {
+        "operationId": "ReceiverService_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxReceiver"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ReceiverService"
+        ]
+      }
+    },
+    "/api/v1/receivers/{receiver.id}": {
+      "put": {
+        "operationId": "ReceiverService_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxReceiver"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "receiver.id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "receiver",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "ReceiverService"
+        ]
+      }
+    },
+    "/api/v1/songs": {
+      "get": {
+        "operationId": "SongService_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxSongList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "albumId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "albumName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SongService"
+        ]
+      },
+      "post": {
+        "operationId": "SongService_Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxSong"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "song",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jukeboxSong"
+            }
+          }
+        ],
+        "tags": [
+          "SongService"
+        ]
+      }
+    },
+    "/api/v1/songs/{id}": {
+      "get": {
+        "operationId": "SongService_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxSong"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "artistId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "albumId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "albumName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SongService"
+        ]
+      },
+      "delete": {
+        "operationId": "SongService_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxSong"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "artistId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "albumId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "artistName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "albumName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SongService"
+        ]
+      }
+    },
+    "/api/v1/songs/{song.id}": {
+      "put": {
+        "operationId": "SongService_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jukeboxSong"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "song.id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "song",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "trackNumber": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "trackLength": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "album": {
+                  "$ref": "#/definitions/jukeboxAlbum"
+                },
+                "artist": {
+                  "$ref": "#/definitions/jukeboxArtist"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "SongService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "jukeboxAlbum": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "artist": {
+          "$ref": "#/definitions/jukeboxArtist"
+        },
+        "tracks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jukeboxSong"
+          }
+        }
+      }
+    },
+    "jukeboxAlbumList": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jukeboxAlbum"
+          }
+        }
+      }
+    },
+    "jukeboxArtist": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "albums": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jukeboxAlbum"
+          }
+        },
+        "songs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jukeboxSong"
+          }
+        }
+      }
+    },
+    "jukeboxArtistList": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jukeboxArtist"
+          }
+        }
+      }
+    },
+    "jukeboxFormat": {
+      "type": "string",
+      "enum": [
+        "FORMAT_UNSET",
+        "JUKEBOX_S16"
+      ],
+      "default": "FORMAT_UNSET"
+    },
+    "jukeboxPlaySongChunk": {
+      "type": "object",
+      "properties": {
+        "chunk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "jukeboxPlaySongChunkResponse": {
+      "type": "object"
+    },
+    "jukeboxPlaySongHeader": {
+      "type": "object",
+      "properties": {
+        "song": {
+          "$ref": "#/definitions/jukeboxSong"
+        },
+        "format": {
+          "$ref": "#/definitions/jukeboxFormat"
+        },
+        "sampleRate": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "channels": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "samples": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "jukeboxPlaySongHeaderResponse": {
+      "type": "object"
+    },
+    "jukeboxPlaySongTrailer": {
+      "type": "object"
+    },
+    "jukeboxPlaySongTrailerResponse": {
+      "type": "object"
+    },
+    "jukeboxPlaylist": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "songs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jukeboxSong"
+          }
+        }
+      }
+    },
+    "jukeboxPlaylistList": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jukeboxPlaylist"
+          }
+        }
+      }
+    },
+    "jukeboxReceiver": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "jukeboxReceiverCommandRequest": {
+      "type": "object",
+      "properties": {
+        "playSongHeader": {
+          "$ref": "#/definitions/jukeboxPlaySongHeader"
+        },
+        "playSongChunk": {
+          "$ref": "#/definitions/jukeboxPlaySongChunk"
+        },
+        "playSongTrailer": {
+          "$ref": "#/definitions/jukeboxPlaySongTrailer"
+        }
+      }
+    },
+    "jukeboxReceiverList": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jukeboxReceiver"
+          }
+        }
+      }
+    },
+    "jukeboxReceiversPlayResponse": {
+      "type": "object",
+      "properties": {
+        "song": {
+          "$ref": "#/definitions/jukeboxSong"
+        },
+        "receivers": {
+          "$ref": "#/definitions/jukeboxReceiverList"
+        }
+      }
+    },
+    "jukeboxReceiversStopResponse": {
+      "type": "object",
+      "properties": {
+        "receivers": {
+          "$ref": "#/definitions/jukeboxReceiverList"
+        }
+      }
+    },
+    "jukeboxSong": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "trackNumber": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "trackLength": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "album": {
+          "$ref": "#/definitions/jukeboxAlbum"
+        },
+        "artist": {
+          "$ref": "#/definitions/jukeboxArtist"
+        }
+      }
+    },
+    "jukeboxSongList": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jukeboxSong"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

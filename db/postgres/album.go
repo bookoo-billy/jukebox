@@ -3,8 +3,9 @@ package postgres
 import (
 	"context"
 	"errors"
+
 	"github.com/bookoo-billy/jukebox/db"
-	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
+	v1 "github.com/bookoo-billy/jukebox/proto/api/v1"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

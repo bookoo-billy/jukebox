@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"flag"
+	"net"
+	"net/http"
+
 	"github.com/bookoo-billy/jukebox/db"
 	_ "github.com/bookoo-billy/jukebox/db/mongo"
 	"github.com/bookoo-billy/jukebox/db/postgres"
 	"github.com/sirupsen/logrus"
-	"net"
-	"net/http"
 
-	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
+	v1 "github.com/bookoo-billy/jukebox/proto/api/v1"
 	"github.com/bookoo-billy/jukebox/server"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"golang.org/x/sync/errgroup"
@@ -31,7 +32,7 @@ func main() {
 	flag.Parse()
 
 	logrus.SetFormatter(&logrus.TextFormatter{
-		ForceColors:               true,
+		ForceColors: true,
 	})
 
 	ctx := context.Background()

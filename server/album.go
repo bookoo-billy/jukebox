@@ -2,8 +2,9 @@ package server
 
 import (
 	"context"
+
 	"github.com/bookoo-billy/jukebox/db"
-	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
+	v1 "github.com/bookoo-billy/jukebox/proto/api/v1"
 )
 
 type AlbumServer struct {

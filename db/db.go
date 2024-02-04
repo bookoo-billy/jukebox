@@ -1,8 +1,8 @@
 package db
 
 import (
+	v1 "bookoo-billy/jukebox/gen/proto/v1"
 	"context"
-	"github.com/bookoo-billy/jukebox/gen/api/v1"
 )
 
 type JukeboxDb interface {

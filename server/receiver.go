@@ -2,21 +2,22 @@ package server
 
 import (
 	"context"
-	"github.com/bookoo-billy/jukebox/db"
-	"github.com/hajimehoshi/go-mp3"
-	"github.com/sirupsen/logrus"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"io"
 	"os"
 	"time"
 
-	v1 "github.com/bookoo-billy/jukebox/gen/api/v1"
+	"github.com/bookoo-billy/jukebox/db"
+	"github.com/hajimehoshi/go-mp3"
+	"github.com/sirupsen/logrus"
+	"google.golang.org/protobuf/types/known/timestamppb"
+
+	v1 "github.com/bookoo-billy/jukebox/proto/api/v1"
 )
 
 const (
 	Mp3SamplesPerChannel = 1152
-	Mp3Channels = 2
-	Mp3ByteDepth = 2
+	Mp3Channels          = 2
+	Mp3ByteDepth         = 2
 )
 
 type ReceiverServer struct {
@@ -130,7 +131,7 @@ func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer)
 	}
 
 	logrus.Info("Sending song chunks to receiver...")
-	buf := make([]byte, Mp3SamplesPerChannel * Mp3Channels * Mp3ByteDepth)
+	buf := make([]byte, Mp3SamplesPerChannel*Mp3Channels*Mp3ByteDepth)
 
 	startTime := time.Now()
 	startTime.Add(2 * time.Second)
@@ -138,13 +139,13 @@ func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer)
 
 	for {
 		length, decErr := decoder.Read(buf)
-		playAt := startTime.Add(time.Duration((float64(Mp3SamplesPerChannel) / float64(decoder.SampleRate())) * float64(count)) * time.Second)
+		playAt := startTime.Add(time.Duration((float64(Mp3SamplesPerChannel)/float64(decoder.SampleRate()))*float64(count)) * time.Second)
 
 		playErr := chatSrv.Send(&v1.ReceiverCommandRequest{
 			Command: &v1.ReceiverCommandRequest_PlaySongChunk{
 				PlaySongChunk: &v1.PlaySongChunk{
-					Chunk: buf,
-					Size: int32(length),
+					Chunk:     buf,
+					Size:      int32(length),
 					Timestamp: timestamppb.New(playAt),
 				},
 			},
@@ -163,7 +164,7 @@ func (s *ReceiverServer) sendSong(chatSrv v1.ReceiverService_ReceiverChatServer)
 			logrus.WithError(playErr).Errorln("Failed while writing chunk to receiver")
 			return playErr
 		}
-		
+
 		if length == 0 {
 			logrus.Info("Received zero bytes from decoder, assuming finished?")
 			break

@@ -1,6 +1,6 @@
 syntax="proto3";
 
-import "tagger/tagger.proto";
+import "api/v1/tagger/tagger.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
